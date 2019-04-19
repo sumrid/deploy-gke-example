@@ -45,3 +45,10 @@ jobs:
           command: |
             docker build -t asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM .
             # docker push asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build-gateway
+    - build-bill
