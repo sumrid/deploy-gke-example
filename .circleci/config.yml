@@ -9,9 +9,9 @@ jobs:
           path: ~/test-soa
       - setup_remote_docker:
           docker_layer_caching: true
-      # - run:
-      #     name: chmod permissions
-      #     command: chmod +x ./gradlew
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
       - run :
           name: Auth to gcloud
           command: |
