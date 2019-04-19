@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  build-gateway:
+    working_directory: ~/test-soa/apigateway
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - run :
+          name: Auth to gcloud
+          command: |
+            echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project ${PROJECT_ID}
+            gcloud auth configure-docker
+      - run :
+          name: Build and push docker images
+          command: |
+            docker build -t asia.gcr.io/soa-group-7-174/api-gateway:$CIRCLE_BUILD_NUM .
+            # docker push asia.gcr.io/soa-group-7-174/api-gateway:$CIRCLE_BUILD_NUM
