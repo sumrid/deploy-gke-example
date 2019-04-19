@@ -5,7 +5,8 @@ jobs:
     docker:
       - image: google/cloud-sdk
     steps:
-      - checkout
+      - checkout:
+          path: ~/test-soa
       - setup_remote_docker:
           docker_layer_caching: true
       # - run:
@@ -28,7 +29,8 @@ jobs:
     docker:
       - image: google/cloud-sdk
     steps:
-      - checkout
+      - checkout:
+          path: ~/test-soa
       - setup_remote_docker:
           docker_layer_caching: true
       # - run:
