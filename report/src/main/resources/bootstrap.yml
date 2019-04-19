@@ -1,0 +1,10 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://35.240.231.15:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+spring:
+  application:
+    name: report-service
