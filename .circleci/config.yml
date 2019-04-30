@@ -21,7 +21,7 @@ jobs:
       - run :
           name: Build and push docker images
           command: |
-            docker build -t asia.gcr.io/soa-group-7-174/api-gateway:$CIRCLE_BUILD_NUM .
+            # docker build -t asia.gcr.io/soa-group-7-174/api-gateway:$CIRCLE_BUILD_NUM .
             # docker push asia.gcr.io/soa-group-7-174/api-gateway:$CIRCLE_BUILD_NUM
 
   build-bill:
@@ -41,12 +41,39 @@ jobs:
           command: |
             echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
             gcloud --quiet config set project ${PROJECT_ID}
+            gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
             gcloud auth configure-docker
       - run :
           name: Build and push docker images
           command: |
-            docker build -t asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM .
+            # docker build -t asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM .
             # docker push asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
+
+  build-product:
+    working_directory: ~/test-soa/product
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout:
+          path: ~/test-soa
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - run :
+          name: Auth to gcloud
+          command: |
+            echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project ${PROJECT_ID}
+            gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
+            gcloud auth configure-docker
+      - run :
+          name: Build and push docker images
+          command: |
+            docker build -t asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM .
+            docker push asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
+            kubectl set image deployment/product product=asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
 
 workflows:
   version: 2
@@ -54,3 +81,4 @@ workflows:
     jobs:
     - build-gateway
     - build-bill
+    - build-product
