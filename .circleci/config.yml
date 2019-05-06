@@ -1,6 +1,4 @@
-version: 2.1
-orbs:
-  codecov: codecov/codecov@1.0.4
+version: 2
 jobs:
   build-gateway:
     working_directory: ~/test-soa/apigateway
@@ -105,7 +103,7 @@ jobs:
                     -y << parameters.conf >> \
                     <<# parameters.flags >> -F << parameters.flags >> <</ parameters.flags >> \
   
-  #########################################
+  ######################################### WEB ####################################
   build-web:
     working_directory: ~/test-soa/web
     docker:
