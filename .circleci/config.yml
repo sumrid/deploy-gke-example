@@ -96,11 +96,11 @@ jobs:
       - run :
           name: Build and push docker images
           command: |
-            ./mvnw clean package
-            ./mvnw jacoco:report
-            bash <(curl -s https://codecov.io/bash)
-            # docker build -t asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM .
-            # docker push asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
+            # ./mvnw clean package
+            # ./mvnw jacoco:report
+            # bash <(curl -s https://codecov.io/bash)
+            docker build -t asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM .
+            docker push asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
             # kubectl set image deployment/product product=asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
   
   ######################################### WEB ####################################
