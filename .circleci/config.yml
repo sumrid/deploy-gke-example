@@ -52,6 +52,27 @@ jobs:
             # docker build -t asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM .
             # docker push asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
             # kubectl set image deployment/bill bill=asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
+  build-report:
+    working_directory: ~/test-soa/report
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout:
+          path: ~/test-soa
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - run :
+          name: Build and push docker images
+          command: |
+            ./gradlew clean build
+            ./gradlew jacocoTestReport
+            bash <(curl -s https://codecov.io/bash)
+            # docker build -t asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM .
+            # docker push asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
+            # kubectl set image deployment/bill bill=asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
 
   build-product:
     working_directory: ~/test-soa/product
@@ -77,6 +98,7 @@ jobs:
           command: |
             ./mvnw clean package
             ./mvnw cobertura:cobertura
+            bash <(curl -s https://codecov.io/bash)
             # docker build -t asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM .
             # docker push asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
             # kubectl set image deployment/product product=asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
@@ -151,7 +173,8 @@ workflows:
     jobs:
       # - build-gateway
       - build-bill
-      # - build-product
+      - build-report
+      - build-product
       # - build-web
       # - deploy-web
           # requires:
