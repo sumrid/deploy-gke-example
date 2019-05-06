@@ -5,9 +5,13 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Repository
 public interface BillRepository extends CrudRepository<Bill, Long> {
-    ArrayList<Bill> findAll();
     Bill findById(long id);
+    ArrayList<Bill> findAll();
+    ArrayList<Bill> findAllByDate(Date date);
+    ArrayList<Bill> findAllByUserNameContains(String name);
+    ArrayList<Bill> findAllByCompanyNameContains(String companyName);
 }

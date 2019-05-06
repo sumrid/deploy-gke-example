@@ -10,9 +10,13 @@ public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @Temporal(TemporalType.DATE)
     private Date date;
-    @OneToMany(cascade=CascadeType.ALL)
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ProductQuantity> productQuantities;
+
     private double totalPrice;
     private String companyName;
     private String userName;

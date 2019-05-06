@@ -14,6 +14,7 @@ plugins {
 
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.google.cloud.tools.appengine'
+apply plugin: 'jacoco'
 
 group = 'com.sumrid_k.pos'
 version = '0.0.1-SNAPSHOT'
@@ -27,15 +28,24 @@ ext {
 	set('springCloudVersion', 'Greenwich.SR1')
 }
 
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		html.enabled false
+	}
+}
+
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'com.google.code.gson:gson:2.8.5'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-ribbon'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-	implementation 'com.google.code.gson:gson:2.8.5'
 	
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'mysql:mysql-connector-java'

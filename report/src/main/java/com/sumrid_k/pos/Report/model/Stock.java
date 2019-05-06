@@ -1,26 +1,24 @@
 package com.sumrid_k.pos.Report.model;
 
+import java.util.Date;
+
 public class Stock {
 
     private int id;
     private String name;
-    private String date_in;
-    private String date_out;
+    private Date date;
     private int quantity;
     private double price;
-    private String status;
     private int productId;
 
     public Stock(){}
 
-    public Stock(int id, String name, String date_in, int quantity, double price, String status, String date_out, int productId) {
+    public Stock(int id, String name, Date date, int quantity, double price, int productId) {
         this.id = id;
         this.name = name;
-        this.date_in = date_in;
+        this.date = date;
         this.quantity = quantity;
         this.price = price;
-        this.status = status;
-        this.date_out = date_out;
         this.productId = productId;
     }
 
@@ -30,14 +28,6 @@ public class Stock {
 
     public void setProductId(int productId) {
         this.productId = productId;
-    }
-
-    public String getDate_out() {
-        return date_out;
-    }
-
-    public void setDate_out(String date_out) {
-        this.date_out = date_out;
     }
 
     public int getId() {
@@ -56,14 +46,6 @@ public class Stock {
         this.name = name;
     }
 
-    public String getDate_in() {
-        return date_in;
-    }
-
-    public void setDate_in(String date_in) {
-        this.date_in = date_in;
-    }
-
     public int getQuantity() {
         return quantity;
     }
@@ -80,11 +62,11 @@ public class Stock {
         this.price = price;
     }
 
-    public String getStatus() {
-        return status;
+    public Date getDate() {
+        return date;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

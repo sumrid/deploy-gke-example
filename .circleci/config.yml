@@ -1,4 +1,6 @@
-version: 2
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.4
 jobs:
   build-gateway:
     working_directory: ~/test-soa/apigateway
@@ -33,9 +35,9 @@ jobs:
           path: ~/test-soa
       - setup_remote_docker:
           docker_layer_caching: true
-      # - run:
-      #     name: chmod permissions
-      #     command: chmod +x ./gradlew
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
       - run :
           name: Auth to gcloud
           command: |
@@ -46,8 +48,10 @@ jobs:
       - run :
           name: Build and push docker images
           command: |
+            # ./gradlew clean build
             # docker build -t asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM .
             # docker push asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
+            # kubectl set image deployment/bill bill=asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
 
   build-product:
     working_directory: ~/test-soa/product
@@ -64,17 +68,44 @@ jobs:
       - run :
           name: Auth to gcloud
           command: |
-            echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
-            gcloud --quiet config set project ${PROJECT_ID}
-            gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
-            gcloud auth configure-docker
+            # echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
+            # gcloud --quiet config set project ${PROJECT_ID}
+            # gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
+            # gcloud auth configure-docker
       - run :
           name: Build and push docker images
           command: |
-            docker build -t asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM .
-            docker push asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
-            kubectl set image deployment/product product=asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
-
+            ./mvnw clean package
+            ./mvnw cobertura:cobertura
+            # docker build -t asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM .
+            # docker push asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
+            # kubectl set image deployment/product product=asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
+      - when:
+          condition: << parameters.file >>
+          steps:
+            - run:
+                name: Upload Coverage Results
+                command: |
+                  bash <(curl -s https://codecov.io/bash) \
+                    -f << parameters.file >> \
+                    -n << parameters.upload_name >> \
+                    -t << parameters.token >> \
+                    -y << parameters.conf >> \
+                    <<# parameters.flags >> -F << parameters.flags >> <</ parameters.flags >> \
+                    
+      - unless:
+          condition: << parameters.file >>
+          steps:
+            - run:
+                name: Upload Coverage Results
+                command: |
+                  bash <(curl -s https://codecov.io/bash) \
+                    -n << parameters.upload_name >> \
+                    -t << parameters.token >> \
+                    -y << parameters.conf >> \
+                    <<# parameters.flags >> -F << parameters.flags >> <</ parameters.flags >> \
+  
+  #########################################
   build-web:
     working_directory: ~/test-soa/web
     docker:
@@ -144,8 +175,8 @@ workflows:
     jobs:
       # - build-gateway
       # - build-bill
-      # - build-product
+      - build-product
       # - build-web
-      - deploy-web
+      # - deploy-web
           # requires:
           #   - build-web

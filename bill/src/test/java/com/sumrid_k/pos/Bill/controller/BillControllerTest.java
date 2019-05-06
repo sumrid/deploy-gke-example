@@ -1,117 +1,191 @@
 package com.sumrid_k.pos.Bill.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.sumrid_k.pos.Bill.model.Bill;
-import com.sumrid_k.pos.Bill.repository.BillRepository;
+import com.sumrid_k.pos.Bill.model.ProductQuantity;
 import com.sumrid_k.pos.Bill.service.BillService;
-import net.bytebuddy.asm.Advice;
-import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+
+@RunWith(MockitoJUnitRunner.class)
 public class BillControllerTest {
 
-    @Autowired
-    private BillService billService;
+    @Mock
+    private RestTemplate restTemplateMock;
+    @Mock
+    private BillService billServiceMock;
 
-    @Autowired
-    private BillRepository billRepository;
+    @Spy
+    @InjectMocks
+    private BillController billController;
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
+    private ArrayList<Bill> billListMock;
+    private ArrayList<ProductQuantity> productQuantitiesMock;
 
-    @Autowired
-    private Gson gson;
-
-    @Test
-    public void getBills() {
+    @Before
+    public void setUp() {
         Bill bill = new Bill();
         bill.setId(1);
         bill.setDate(new Date());
         bill.setTotalPrice(99.99);
-        bill.setCompanyName("company test Inc.");
+        bill.setCompanyName("Tie the Taught");
         bill.setUserName("sumrid k");
-        billService.saveBill(bill);
 
-        // get response entity
-        ResponseEntity respones = testRestTemplate.getForEntity("/bills", ArrayList.class);
-        String json = gson.toJson(respones.getBody());
-        System.out.println(json);
+        Bill bil2 = new Bill();
+        bil2.setId(2);
+        bil2.setDate(new Date());
+        bil2.setTotalPrice(200.99);
+        bil2.setCompanyName("Barlow and Co");
+        bil2.setUserName("Mylee Turnbull");
 
-        // json to object
-        Type type = new TypeToken<ArrayList<Bill>>(){}.getType();
-        ArrayList<Bill> bills = gson.fromJson(json, type);
-        Bill billRes = bills.get(0);
-
-        assertEquals(1, billRes.getId());
-        assertEquals(99.99, billRes.getTotalPrice(), 0.00);
-        assertEquals("company test Inc.", billRes.getCompanyName());
-        assertEquals("sumrid k", billRes.getUserName());
+        billListMock = new ArrayList<>();
+        billListMock.add(bill);
+        billListMock.add(bil2);
     }
 
     @Test
-    public void getBill() {
-        Bill bill = new Bill();
-        bill.setId(1);
-        bill.setDate(new Date());
-        bill.setTotalPrice(200.99);
-        bill.setCompanyName("company test 1");
-        bill.setUserName("sumrid k");
-        billService.saveBill(bill);
+    public void testIndex() {
+        String response = billController.index();
 
-        Bill response = testRestTemplate.getForObject("/bills/1", Bill.class);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        assertEquals(1, response.getId());
-        assertEquals(sdf.format(bill.getDate()), sdf.format(response.getDate()));
-        assertEquals(200.99, response.getTotalPrice(), 0.00);
-        assertEquals("company test 1", response.getCompanyName());
-        assertEquals("sumrid k", response.getUserName());
+        assertEquals("<h1 align=\"center\">Hello, this is bill service</h1>", response);
     }
 
     @Test
-    public void createBill() {
+    public void testGetAllBillsSuccess() {
+        when(billServiceMock.getAll()).thenReturn(billListMock);
+
+        ArrayList<Bill> result = billController.getBills();
+
+        assertEquals(2, result.size());
+        verify(billServiceMock, atLeast(1)).getAll();
+    }
+
+    @Test
+    public void testGetBillByIdSuccess() {
+        when(billServiceMock.getBill(1)).thenReturn(billListMock.get(0));
+
+        Bill result = billController.getBill(1);
+
+        assertEquals("sumrid k", result.getUserName());
+        assertEquals("Tie the Taught", result.getCompanyName());
+        assertEquals(99.99, result.getTotalPrice(), 0.00);
+    }
+
+    @Test
+    public void testCreateBillSuccess() {
         Bill request = new Bill();
-        request.setId(1);
+        request.setId(3);
         request.setDate(new Date());
         request.setTotalPrice(200.99);
-        request.setCompanyName("company test 1");
-        request.setUserName("sumrid k");
+        request.setCompanyName("company Inc.");
+        request.setUserName("Rora Back");
+        request.setProductQuantities(productQuantitiesMock = new ArrayList<>());
+        ResponseEntity responseEntityExpected = ResponseEntity.status(HttpStatus.CREATED).body(request);
 
-        Bill response = testRestTemplate.postForObject("/bills", request, Bill.class);
+        when(billServiceMock.saveBill(any(Bill.class))).thenReturn(request);
+        when(restTemplateMock.postForEntity(anyString(), any(Bill.class), eq(ResponseEntity.class)))
+                .thenReturn(responseEntityExpected);
 
-        assertEquals(1, response.getId());
-        assertEquals(request.getDate(), response.getDate());
-        assertEquals(200.99, response.getTotalPrice(), 0.00);
-        assertEquals("company test 1", response.getCompanyName());
-        assertEquals("sumrid k", response.getUserName());
+        ResponseEntity responseEntity = billController.createBill(request);
+        Bill response = (Bill) responseEntity.getBody();
+
+        assertEquals("Rora Back", response.getUserName());
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @Test
-    public void updateBills() {
+    public void testUpdateBillSuccess() {
+        Bill request = new Bill();
+        request.setDate(new Date());
+        request.setTotalPrice(1500);
+        request.setCompanyName("724 Solutions Inc.");
+        request.setUserName("Rio Tinto");
+
+        when(billServiceMock.updateBill(anyLong(), any(Bill.class))).thenReturn(true);
+
+        ResponseEntity responseEntity = billController.updateBills(1, request);
+        Bill response = (Bill) responseEntity.getBody();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(1500, response.getTotalPrice(), 0.00);
+        assertEquals("Rio Tinto", response.getUserName());
     }
 
     @Test
-    public void deleteBills() {
+    public void testUpdateBillFail() {
+        when(billServiceMock.updateBill(anyLong(), any(Bill.class))).thenReturn(false);
+
+        ResponseEntity responseEntity = billController.updateBills(1, new Bill());
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void testDeleteBillSuccess() {
+        when(billServiceMock.deleteBill(anyLong())).thenReturn(true);
+
+        ResponseEntity responseEntity = billController.deleteBills(1);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Bill is deleted successfully", responseEntity.getBody());
+
+    }
+
+    @Test
+    public void testDeleteBillFail() {
+        when(billServiceMock.deleteBill(anyLong())).thenReturn(false);
+
+        ResponseEntity responseEntity = billController.deleteBills(1);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("Deleted fail", responseEntity.getBody());
+    }
+
+    @Test
+    public void testGetBillByUserName() {
+        ArrayList<Bill> request = new ArrayList<>();
+        request.add(billListMock.get(0));
+
+        when(billServiceMock.getByName(anyString())).thenReturn(request);
+
+        ArrayList<Bill> response = billController.getByName("sumrid");
+
+        assertEquals(1, response.size());
+        assertEquals("sumrid k", response.get(0).getUserName());
+    }
+
+    @Test
+    public void testGetByDate() {
+        when(billServiceMock.getByDate(anyString())).thenReturn(billListMock);
+
+        ArrayList<Bill> response = billController.getByDate("today");
+
+        assertEquals(2, response.size());
+    }
+
+    @Test
+    public void testGetByCompanyName() {
+        ArrayList<Bill> request = new ArrayList<>();
+        request.add(billListMock.get(1));
+
+        when(billServiceMock.getByCompanyName(anyString())).thenReturn(request);
+
+        ArrayList<Bill> response = billController.getByCompanyName("Barlow and Co");
+
+        assertEquals("Barlow and Co", response.get(0).getCompanyName());
     }
 }

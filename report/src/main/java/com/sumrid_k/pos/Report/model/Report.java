@@ -13,8 +13,8 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private Date date;
-    private long bestseller;
-    private long lowInventory;
+    private String bestseller;
+    private String lowInventory;
     private double income;
     private double profit;
 
@@ -37,19 +37,19 @@ public class Report {
         this.date = date;
     }
 
-    public long getBestseller() {
+    public String getBestseller() {
         return bestseller;
     }
 
-    public void setBestseller(long bestseller) {
+    public void setBestseller(String bestseller) {
         this.bestseller = bestseller;
     }
 
-    public long getLowInventory() {
+    public String getLowInventory() {
         return lowInventory;
     }
 
-    public void setLowInventory(long lowInventory) {
+    public void setLowInventory(String lowInventory) {
         this.lowInventory = lowInventory;
     }
 

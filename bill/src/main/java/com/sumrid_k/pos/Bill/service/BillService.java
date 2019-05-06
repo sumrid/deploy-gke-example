@@ -5,7 +5,10 @@ import com.sumrid_k.pos.Bill.repository.BillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 @Service
 public class BillService {
@@ -13,22 +16,22 @@ public class BillService {
     @Autowired
     private BillRepository billRepository;
 
-    // get by id
+    // Get by id
     public Bill getBill(long id) {
         return billRepository.findById(id);
     }
 
-    // get all bills
+    // Get all bills
     public ArrayList<Bill> getAll() {
         return billRepository.findAll();
     }
 
-    // save
-    public void saveBill(Bill bill) {
-        billRepository.save(bill);
+    // Save
+    public Bill saveBill(Bill bill) {
+        return billRepository.save(bill);
     }
 
-    // delete
+    // Delete
     public boolean deleteBill(long id) {
         Bill bill = billRepository.findById(id);
 
@@ -40,7 +43,7 @@ public class BillService {
         }
     }
 
-    // update
+    // Update
     public boolean updateBill(long id, Bill bill) {
         Bill result = billRepository.findById(id);
 
@@ -51,5 +54,34 @@ public class BillService {
         } else {
             return false;
         }
+    }
+
+    public ArrayList<Bill> getByName(String name) {
+        return billRepository.findAllByUserNameContains(name);
+    }
+
+    public ArrayList<Bill> getByDate(String dateStr) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+        if(dateStr.equals("today")){
+            return getByDateToday();
+        } else {
+            try {
+                Date date = format.parse(dateStr);
+                System.out.println(date.toString());
+                return billRepository.findAllByDate(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return new ArrayList<>();
+            }
+        }
+    }
+
+    public ArrayList<Bill> getByDateToday() {
+        return billRepository.findAllByDate(new Date());
+    }
+
+    public ArrayList<Bill> getByCompanyName(String companyName) {
+        return billRepository.findAllByCompanyNameContains(companyName);
     }
 }

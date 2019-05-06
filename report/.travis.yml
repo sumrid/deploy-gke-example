@@ -17,9 +17,14 @@ before_install:
   - gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
 
 script:
-  - docker build -t asia.gcr.io/soa-group-7-174/report:$TRAVIS_JOB_NUMBER .
-  - gcloud docker -- push asia.gcr.io/soa-group-7-174/report:$TRAVIS_JOB_NUMBER
-  - kubectl set image deployment/report report=asia.gcr.io/soa-group-7-174/report:$TRAVIS_JOB_NUMBER
+  - ./gradlew clean build
+  - ./gradlew jacocoTestReport
+#  - docker build -t asia.gcr.io/soa-group-7-174/report:$TRAVIS_JOB_NUMBER .
+#  - gcloud docker -- push asia.gcr.io/soa-group-7-174/report:$TRAVIS_JOB_NUMBER
+#  - kubectl set image deployment/report report=asia.gcr.io/soa-group-7-174/report:$TRAVIS_JOB_NUMBER
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 services:
   - docker

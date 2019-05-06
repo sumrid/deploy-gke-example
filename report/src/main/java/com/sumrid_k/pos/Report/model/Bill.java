@@ -1,13 +1,22 @@
 package com.sumrid_k.pos.Report.model;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 public class Bill {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @Temporal(TemporalType.DATE)
     private Date date;
-    private List<ProductQuantity> productQuantityList;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ProductQuantity> productQuantities;
+
     private double totalPrice;
     private String companyName;
     private String userName;
@@ -31,12 +40,12 @@ public class Bill {
         this.date = date;
     }
 
-    public List<ProductQuantity> getProductQuantityList() {
-        return productQuantityList;
+    public List<ProductQuantity> getProductQuantities() {
+        return productQuantities;
     }
 
-    public void setProductQuantityList(List<ProductQuantity> productQuantityList) {
-        this.productQuantityList = productQuantityList;
+    public void setProductQuantities(List<ProductQuantity> productQuantities) {
+        this.productQuantities = productQuantities;
     }
 
     public double getTotalPrice() {

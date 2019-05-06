@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "soa-group-7-174",
+  "private_key_id": "911f27a4d61e0a98f95832a14d1103f18acab789",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDOKAvAqjesGBzf\nN8BEOsRt1YEMT+L9Z1sFtrDaK6nP3y9JhdsjI+VGe7k7ltKsExmgGW5Xh1XNEk0Y\na9AgFoEKoK5BTyTI4gwy/3mDW1XOGmVkdP4gEb8N8bnaog/pxxHtmIb4X0SNiX9B\n/gRMHNKkEPHwek9dgB2p80wxXyTdg4g0ZXIZaf/4h4rOmggn22qQEpXd3Luxh5eq\nwSwL6EaHXm5ZHRSuHo1LFcNFCRUjQnk/sQZakWQqK74Op10F4u4nLZlOxbP/T+Bf\nmpUJRXf9nojHdp48qsbDnRGONBo+ca4bpTulork2TKlmbScfA4eGAIDoywujk5qB\nYsvOdbR9AgMBAAECggEAAuSpe4/3/YyOFSzjYCHCAXeaWsmhOiSx8JPWig1MUgxE\nDeBYyba2gEV6vUUZ2kvfU3Gf7I8L63ebCOF0d4rRT0yffW+mqMIRYULYGfmVa/HP\nY/hHW7xcBc5TaSfWmNWQIRk/pasym1jnZg3yUf4ij6ZkOteAlyOV5v1w342CBzDL\nqlGp+MHvBzRsTesBdVSpwXvnNIzd5ONykfW3vGxKeVhAA4EmJuGZvq7XXHdD37pQ\nHpZ8yLCRelUEzanwgqph0gPwXoFeqJIBEylE4h+t1AWdF6T1rIVBNON28cMRzDkK\nY8CeM2Gi5ZCz8zYJSuCrDubca3PUevlATTPX1L67KQKBgQDzYMeo3vFRqACDvCHX\n7kzQLk3ywplEdXP5gPkLmmfSFV8ObSto6lZzD6+EY48vmPew+fOdyKNAFZuw0AWh\n3qTw9qcRZsgvv/lpbYtKeultxx600R9+iWIne+rOwWYbKBlI78vUEr1vmyCe55qQ\npkV0++Z+wR11+H9KF0S0Wqj3WQKBgQDY2RdoY584eFfY18sY9a3Arot0tPRvBbS3\ncrIDmKuOXMgYP62S/AFD+SGfljh2apROP91z7rodbY/OJo7BdMntNrdFm6jbUFcw\njMnnShSFUiPx82c/k0t7Q+QhMohlS2nUWtD/eeQG9UF3+aRz17xZxizYhqkUkyXF\n0NpgfbulxQKBgC/9poFDLPy4Dxnq8BV/NQBcERzMiKJ6MptBdlp2YQCJHExg9I1k\noBViQ27snuB43ma0cvhrBt3tJN0xt9qaZ5XoXTtONC1OQqUqZ6wRHpR6DjEDh51R\nA9zbT4rjkfnK52l9d4jjBR3LzhvneZAKaWnO/j2CYQfRL3BxtCeINQdJAoGAd1F0\n5Na0PKFTTRjoQxKkCbrBN3V+bjyIhMySkRIHi+0XmOgo/RC3LYy+6I4DAX2Bn1Da\n7Li2Jg0sLLXgpSg7F9CcpauSDSM25psBWcfUZMuexbo13LCSvv/LXkzs6jfFwrg5\n+ek7BG0dGgP+blON6yP1dysZjB2vkhpqnt9wSjUCgYBNkE3GCCLWkRkpYYEDxZdq\nBLY/iK5W8fyGuJF/QAAHTQ1Ki/PKUpw/rDe1z3LYIU802mUygpRVglv+OPbjHLNo\nUjOFdy31kPW+Y9OUmszJ1XwMaoRWJJJTf0z0G3+9Ydxny7iERSZ0rZWE2rcOr1Aq\n9vMjE2AzMdjNjR0EAlBRbA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "cloud-storage@soa-group-7-174.iam.gserviceaccount.com",
+  "client_id": "101394603105019270737",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloud-storage%40soa-group-7-174.iam.gserviceaccount.com"
+}
