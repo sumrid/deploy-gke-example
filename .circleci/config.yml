@@ -106,6 +106,7 @@ jobs:
     working_directory: ~/test-soa/web
     docker:
       - image: google/cloud-sdk
+      - image: circleci/node:10
     steps:
       - checkout:
           path: ~/test-soa
@@ -113,6 +114,11 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           key: yarn-build-{{ .Revision }}
+      - run:
+          name: Build web
+          command: |
+            npm install
+            yarn build
       - run :
           name: Auth to gcloud
           command: |
@@ -121,7 +127,7 @@ jobs:
             gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
             gcloud auth configure-docker
       - run :
-          name: Build and push docker images
+          name: Build image and push docker images
           command: |
             docker build -t asia.gcr.io/soa-group-7-174/web:$CIRCLE_BUILD_NUM .
             docker push asia.gcr.io/soa-group-7-174/web:$CIRCLE_BUILD_NUM
@@ -135,7 +141,7 @@ workflows:
       # - build-gateway
       # - build-bill
       # - build-product
-      - build-web
-      - deploy-web:
-          requires:
-            - build-web
+      # - build-web
+      - deploy-web
+          # requires:
+          #   - build-web
