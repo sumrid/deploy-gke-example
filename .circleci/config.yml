@@ -103,13 +103,10 @@ jobs:
           path: build
   
   deploy-web:
-    docker:
-      - image: google/cloud-sdk
-
-      - image: circleci/node:10
-        command: |
-          npm i -g yarn 
-
+    # docker:
+    #   - image: google/cloud-sdk
+    machine:
+      image: circleci/classic:latest
     working_directory: ~/test-soa/web
     steps:
       - checkout:
