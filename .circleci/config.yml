@@ -78,30 +78,6 @@ jobs:
             # docker build -t asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM .
             # docker push asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
             # kubectl set image deployment/product product=asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
-      - when:
-          condition: << parameters.file >>
-          steps:
-            - run:
-                name: Upload Coverage Results
-                command: |
-                  bash <(curl -s https://codecov.io/bash) \
-                    -f << parameters.file >> \
-                    -n << parameters.upload_name >> \
-                    -t << parameters.token >> \
-                    -y << parameters.conf >> \
-                    <<# parameters.flags >> -F << parameters.flags >> <</ parameters.flags >> \
-                    
-      - unless:
-          condition: << parameters.file >>
-          steps:
-            - run:
-                name: Upload Coverage Results
-                command: |
-                  bash <(curl -s https://codecov.io/bash) \
-                    -n << parameters.upload_name >> \
-                    -t << parameters.token >> \
-                    -y << parameters.conf >> \
-                    <<# parameters.flags >> -F << parameters.flags >> <</ parameters.flags >> \
   
   ######################################### WEB ####################################
   build-web:
