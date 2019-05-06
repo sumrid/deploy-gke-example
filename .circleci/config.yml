@@ -91,9 +91,10 @@ jobs:
           command: |
             npm install
             yarn build
-      # - save_cache:
-      #     key: yarn-build
-      #     path: build
+      - save_cache:
+          key: yarn-build-{{ .Revision }}
+          paths: 
+            - build
       - save_cache:
           paths:
             - node_modules
@@ -111,7 +112,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - restore_cache:
-          key: yarn-build
+          key: yarn-build-{{ .Revision }}
       - run :
           name: Auth to gcloud
           command: |
