@@ -94,7 +94,7 @@ jobs:
       - save_cache:
           key: yarn-build-{{ .Revision }}
           paths: 
-            - build
+            - ~/.build
       - save_cache:
           paths:
             - node_modules
@@ -114,11 +114,11 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           key: yarn-build-{{ .Revision }}
-      - run:
-          name: Build web
-          command: |
-            npm install
-            yarn build
+      # - run:
+      #     name: Build web
+      #     command: |
+      #       npm install
+      #       yarn build
       - run :
           name: Auth to gcloud
           command: |
@@ -142,6 +142,6 @@ workflows:
       # - build-bill
       # - build-product
       # - build-web
-      - deploy-web
-          # requires:
-          #   - build-web
+      - deploy-web:
+          requires:
+            - build-web
