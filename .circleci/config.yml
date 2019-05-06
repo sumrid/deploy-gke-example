@@ -88,7 +88,9 @@ jobs:
             - v1-dependencies-
       - run:
           name: build web
-          command: yarn build
+          command: |
+            npm install
+            yarn build
       - store_test_results:
           path: test-results
 
