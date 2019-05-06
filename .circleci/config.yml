@@ -95,6 +95,9 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+      - save_cache:
+          key: yarn-build
+          path: build
       - store_test_results:
           path: build
   
@@ -107,6 +110,8 @@ jobs:
           path: ~/test-soa
       - setup_remote_docker:
           docker_layer_caching: true
+      - restore_cache:
+          key: yarn-build
       - run :
           name: Auth to gcloud
           command: |
