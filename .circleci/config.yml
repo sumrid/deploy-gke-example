@@ -107,7 +107,9 @@ jobs:
       - image: google/cloud-sdk
 
       - image: circleci/node:10
-      
+        command: |
+          npm i -g yarn 
+
     working_directory: ~/test-soa/web
     steps:
       - checkout:
