@@ -107,12 +107,13 @@ jobs:
     #   - image: google/cloud-sdk
     machine:
       image: circleci/classic:latest
+      docker_layer_caching: true
     working_directory: ~/test-soa/web
     steps:
       - checkout:
           path: ~/test-soa
-      - setup_remote_docker:
-          docker_layer_caching: true
+      # - setup_remote_docker:
+      #     docker_layer_caching: true
       - restore_cache:
           key: yarn-build-{{ .Revision }}
       - run:
