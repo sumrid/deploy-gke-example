@@ -92,12 +92,12 @@ jobs:
             npm install
             yarn build
       - save_cache:
+          key: yarn-build
+          path: build
+      - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - save_cache:
-          key: yarn-build
-          path: build
       - store_test_results:
           path: build
   
