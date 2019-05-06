@@ -141,7 +141,7 @@ workflows:
       # - build-gateway
       # - build-bill
       # - build-product
-      # - build-web
+      - build-web
       - deploy-web:
           requires:
             - build-web
