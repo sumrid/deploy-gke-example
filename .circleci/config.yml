@@ -93,6 +93,30 @@ jobs:
             yarn build
       - store_test_results:
           path: test-results
+  
+  deploy-web:
+    working_directory: ~/test-soa/web
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout:
+          path: ~/test-soa
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run :
+          name: Auth to gcloud
+          command: |
+            echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project ${PROJECT_ID}
+            gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
+            gcloud auth configure-docker
+      - run :
+          name: Build and push docker images
+          command: |
+            docker build -t asia.gcr.io/soa-group-7-174/web:$CIRCLE_BUILD_NUM .
+            docker push asia.gcr.io/soa-group-7-174/web:$CIRCLE_BUILD_NUM
+            # kubectl set image deployment/web web=asia.gcr.io/soa-group-7-174/web:$CIRCLE_BUILD_NUM
+
 
 workflows:
   version: 2
@@ -102,3 +126,6 @@ workflows:
       # - build-bill
       # - build-product
       - build-web
+      - deploy-web:
+          requires:
+            - build-web
