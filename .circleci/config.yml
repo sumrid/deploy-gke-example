@@ -46,7 +46,9 @@ jobs:
       - run :
           name: Build and push docker images
           command: |
-            # ./gradlew clean build
+            ./gradlew clean build
+            ./gradlew jacocoTestReport
+            bash <(curl -s https://codecov.io/bash)
             # docker build -t asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM .
             # docker push asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
             # kubectl set image deployment/bill bill=asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
@@ -148,8 +150,8 @@ workflows:
   workflow:
     jobs:
       # - build-gateway
-      # - build-bill
-      - build-product
+      - build-bill
+      # - build-product
       # - build-web
       # - deploy-web
           # requires:
