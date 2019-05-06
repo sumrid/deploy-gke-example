@@ -103,25 +103,26 @@ jobs:
           path: build
   
   deploy-web:
-    # docker:
-    #   - image: google/cloud-sdk
-    machine:
-      image: circleci/classic:latest
-      docker_layer_caching: true
+    docker:
+      - image: google/cloud-sdk
+    # machine:
+    #   image: circleci/classic:latest
+    #   docker_layer_caching: true
+
     working_directory: ~/test-soa/web
     steps:
       - checkout:
           path: ~/test-soa
-      # - setup_remote_docker:
-      #     docker_layer_caching: true
+      - setup_remote_docker:
+          docker_layer_caching: true
       - restore_cache:
           key: yarn-build-{{ .Revision }}
-      - run:
-          name: Build web
-          command: |
-            npm install
-            npm i -g yarn
-            yarn build
+      # - run:
+      #     name: Build web
+      #     command: |
+      #       npm install
+      #       npm i -g yarn
+      #       yarn build
       - run :
           name: Auth to gcloud
           command: |
