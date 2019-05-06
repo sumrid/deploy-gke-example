@@ -75,10 +75,28 @@ jobs:
             docker push asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
             kubectl set image deployment/product product=asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
 
+  build-web:
+    working_directory: ~/test-soa/web
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout:
+          path: ~/test-soa
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: build web
+          command: yarn build
+      - store_test_results:
+          path: test-results
+
 workflows:
   version: 2
   workflow:
     jobs:
-    - build-gateway
-    - build-bill
-    - build-product
+      # - build-gateway
+      # - build-bill
+      # - build-product
+      - build-web
