@@ -1,4 +1,6 @@
 [![CircleCI](https://circleci.com/gh/sumrid/test-soa.svg?style=svg)](https://circleci.com/gh/sumrid/test-soa)
+![](https://img.shields.io/static/v1.svg?label=made%20with&message=JAVA&color=ef972b&logo=java&style=flat)
+![](https://img.shields.io/static/v1.svg?label=container&message=Docker&color=1488C6&logo=docker&style=flat&logoColor=white)
 # test-soa
 
 
