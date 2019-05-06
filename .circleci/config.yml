@@ -103,10 +103,12 @@ jobs:
           path: build
   
   deploy-web:
-    working_directory: ~/test-soa/web
     docker:
-      - image: circleci/node:10
       - image: google/cloud-sdk
+
+      - image: circleci/node:10
+      
+    working_directory: ~/test-soa/web
     steps:
       - checkout:
           path: ~/test-soa
