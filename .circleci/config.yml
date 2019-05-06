@@ -120,6 +120,7 @@ jobs:
           name: Build web
           command: |
             npm install
+            npm i -g yarn
             yarn build
       - run :
           name: Auth to gcloud
