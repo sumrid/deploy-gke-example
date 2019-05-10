@@ -132,8 +132,7 @@ jobs:
       - run :
           name: Deploy web
           command: |
-            gcloud compute --quiet --project "soa-group-7-174" ssh --zone "asia-southeast1-b" "sumri@server"
-            "sudo docker stop web
+            ssh "$SSH_USER@$SSH_HOST" "sudo docker stop web &&
             sudo docker --rm -p 80:3000 -d --name=web $IMAGE_NAME:$CIRCLE_BUILD_NUM"
 
 
