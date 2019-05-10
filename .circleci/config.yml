@@ -117,6 +117,9 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           key: yarn-build-{{ .Revision }}
+      - add_ssh_keys:
+          fingerprints:
+            - "ec:b1:1c:f8:a1:e5:ce:cf:4d:d5:88:b2:a2:08:88:f2"
       - run :
           name: Auth to gcloud
           command: |
