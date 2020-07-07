@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/sumrid/test-soa.svg?style=svg)](https://circleci.com/gh/sumrid/test-soa)
+[![CircleCI](https://circleci.com/gh/sumrid/deploy-gke-example.svg?style=svg)](https://circleci.com/gh/sumrid/deploy-gke-example)
 ![](https://img.shields.io/static/v1.svg?label=made%20with&message=JAVA&color=f268b4&logo=java&style=flat)
 ![](https://img.shields.io/static/v1.svg?label=github&message=Wiki&color=7150aa&logo=github&style=flat)
 ![](https://img.shields.io/static/v1.svg?label=container&message=Docker&color=1488C6&logo=docker&style=flat&logoColor=white)
