@@ -17,5 +17,15 @@ jobs:
           name: chmod permissions
           command: chmod +x ./gradlew
       - run:
-          name: build
+          name: Build
           command: ./gradlew clean build
+
+workflows:
+  version: 2
+  my-workflow:
+    jobs:
+      - build-gateway
+      # - build-bill
+      # - build-report
+      # - build-product
+      # - deploy-web
