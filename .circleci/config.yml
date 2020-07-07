@@ -6,13 +6,13 @@ jobs:
       - image: circleci/openjdk:8u252-jdk
     steps:
       - restore_cache:
-        keys:
-          # when lock file changes, use increasingly general patterns to restore cache
-          - gradle-repo-v1-{{ .Branch }}-{{ checksum "dependencies.lockfile" }}
+          keys:
+            # when lock file changes, use increasingly general patterns to restore cache
+            - gradle-repo-v1-{{ .Branch }}-{{ checksum "dependencies.lockfile" }}
       - save_cache:
-        paths:
-          - ~/.gradle
-        key: gradle-repo-v1-{{ .Branch }}-{{ checksum "dependencies.lockfile" }}  
+          paths:
+            - ~/.gradle
+          key: gradle-repo-v1-{{ .Branch }}-{{ checksum "dependencies.lockfile" }}
       - run:
           name: chmod permissions
           command: chmod +x ./gradlew
