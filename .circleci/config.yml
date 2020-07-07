@@ -5,7 +5,8 @@ jobs:
     docker:
       - image: circleci/openjdk:8u252-jdk
     steps:
-      - checkout
+      - checkout:
+          path: ~/deploy-gke-example
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
