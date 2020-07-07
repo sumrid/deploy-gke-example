@@ -5,6 +5,7 @@ jobs:
     docker:
       - image: circleci/openjdk:8u252-jdk
     steps:
+      - checkout
       - restore_cache:
           keys:
             # when lock file changes, use increasingly general patterns to restore cache
