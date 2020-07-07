@@ -1,150 +1,21 @@
 version: 2
 jobs:
   build-gateway:
-    working_directory: ~/test-soa/apigateway
+    working_directory: ~/deploy-gke-example/apigateway
     docker:
-      - image: google/cloud-sdk
+      - image: circleci/openjdk:8u252-jdk
     steps:
-      - checkout:
-          path: ~/test-soa
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: chmod permissions
-          command: chmod +x ./gradlew
-      - run :
-          name: Auth to gcloud
-          command: |
-            echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
-            gcloud --quiet config set project ${PROJECT_ID}
-            gcloud auth configure-docker
-      - run :
-          name: Build and push docker images
-          command: |
-            # docker build -t asia.gcr.io/soa-group-7-174/api-gateway:$CIRCLE_BUILD_NUM .
-            # docker push asia.gcr.io/soa-group-7-174/api-gateway:$CIRCLE_BUILD_NUM
-
-  build-bill:
-    working_directory: ~/test-soa/bill
-    docker:
-      - image: google/cloud-sdk
-    steps:
-      - checkout:
-          path: ~/test-soa
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: chmod permissions
-          command: chmod +x ./gradlew
-      - run :
-          name: Auth to gcloud
-          command: |
-            echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
-            gcloud --quiet config set project ${PROJECT_ID}
-            gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
-            gcloud auth configure-docker
-      - run :
-          name: Build and push docker images
-          command: |
-            ./gradlew clean build
-            ./gradlew jacocoTestReport
-            bash <(curl -s https://codecov.io/bash)
-            # docker build -t asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM .
-            # docker push asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
-            # kubectl set image deployment/bill bill=asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
-  build-report:
-    working_directory: ~/test-soa/report
-    docker:
-      - image: google/cloud-sdk
-    steps:
-      - checkout:
-          path: ~/test-soa
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: chmod permissions
-          command: chmod +x ./gradlew
-      - run :
-          name: Build and push docker images
-          command: |
-            ./gradlew clean build
-            ./gradlew jacocoTestReport
-            bash <(curl -s https://codecov.io/bash)
-            # docker build -t asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM .
-            # docker push asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
-            # kubectl set image deployment/bill bill=asia.gcr.io/soa-group-7-174/bill:$CIRCLE_BUILD_NUM
-
-  build-product:
-    working_directory: ~/test-soa/product
-    docker:
-      - image: google/cloud-sdk
-    steps:
-      - checkout:
-          path: ~/test-soa
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: chmod permissions
-          command: chmod +x ./mvnw
-      - run :
-          name: Auth to gcloud
-          command: |
-            echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
-            gcloud --quiet config set project ${PROJECT_ID}
-            gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
-            gcloud auth configure-docker
-      - run :
-          name: Build and push docker images
-          command: |
-            # ./mvnw clean package
-            # ./mvnw jacoco:report
-            # bash <(curl -s https://codecov.io/bash)
-            docker build -t asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM .
-            docker push asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
-            # kubectl set image deployment/product product=asia.gcr.io/soa-group-7-174/product:$CIRCLE_BUILD_NUM
-  
-  ######################################### WEB ####################################
-  deploy-web:
-    docker:
-      - image: google/cloud-sdk
-    environment:
-      IMAGE_NAME: asia.gcr.io/soa-group-7-174/web
-    working_directory: ~/test-soa/web
-    steps:
-      - checkout:
-          path: ~/test-soa
-      - setup_remote_docker:
-          docker_layer_caching: true
       - restore_cache:
-          key: yarn-build-{{ .Revision }}
-      - add_ssh_keys:
-          fingerprints:
-            - "ec:b1:1c:f8:a1:e5:ce:cf:4d:d5:88:b2:a2:08:88:f2"
-      - run :
-          name: Auth to gcloud
-          command: |
-            echo $GCLOUD_KEY | gcloud auth activate-service-account --key-file=-
-            gcloud --quiet config set project ${PROJECT_ID}
-            gcloud container clusters get-credentials soa-service --zone asia-southeast1-b --project soa-group-7-174
-            gcloud auth configure-docker
-      - run :
-          name: Build and push docker images
-          command: |
-            docker build -t $IMAGE_NAME:$CIRCLE_BUILD_NUM .
-            docker push $IMAGE_NAME:$CIRCLE_BUILD_NUM
-      - run :
-          name: Deploy web
-          command: |
-            ssh "$SSH_USER@$SSH_HOST" "sudo docker stop web &&
-            sudo docker --rm -p 80:3000 -d --name=web $IMAGE_NAME:$CIRCLE_BUILD_NUM"
-
-
-workflows:
-  version: 2
-  workflow:
-    jobs:
-      # - build-gateway
-      # - build-bill
-      # - build-report
-      # - build-product
-      - deploy-web
+        keys:
+          # when lock file changes, use increasingly general patterns to restore cache
+          - gradle-repo-v1-{{ .Branch }}-{{ checksum "dependencies.lockfile" }}
+      - save_cache:
+        paths:
+          - ~/.gradle
+        key: gradle-repo-v1-{{ .Branch }}-{{ checksum "dependencies.lockfile" }}  
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - run:
+          name: build
+          command: ./gradlew clean build

@@ -1,6 +1,10 @@
-FROM openjdk:8-jdk-alpine
-USER root
+FROM openjdk:8-jdk-alpine AS build
+WORKDIR /app
 COPY . .
-RUN ./gradlew clean build
+RUN chmod +x ./gradlew
+RUN ./gradlew build
+
+FROM openjdk:8-jdk-alpine
+COPY --from=build /app/build/libs/apigateway-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/build/libs/apigateway-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "apigateway-0.0.1-SNAPSHOT.jar"]

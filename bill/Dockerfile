@@ -1,9 +1,14 @@
 ############ clean build & run #############
+FROM openjdk:8-jdk-alpine AS build
+WORKDIR /app
+COPY . .
+RUN chmod +x ./gradlew
+RUN ./gradlew build
+
 FROM openjdk:8-jdk-alpine
-USER root
-COPY /build/libs/Bill-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build app/build/libs/Bill-0.0.1-SNAPSHOT.jar bill.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "bill.jar"]
 
 
 ########### As simple as possible #############
